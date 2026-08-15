@@ -6,7 +6,8 @@ PROD MODE: When H6:H21 are empty → populate B41:B42, D41:D42, F41:F42.
 
 Usage:
   python3 monitor.py          # run once and exit (for scheduled execution)
-  python3 monitor.py --loop   # run continuously (for local testing)
+  python3 monitor.py --wait   # keep checking until source empties, then fill and exit
+  python3 monitor.py --loop   # run continuously forever (for local testing)
 """
 
 import argparse
@@ -114,9 +115,10 @@ def run_once(ws: gspread.Worksheet) -> None:
         print(f"[{now}] {source} has data — no action needed.", flush=True)
 
 
-def run_loop(ws: gspread.Worksheet) -> None:
-    """Continuous monitoring loop (for local testing)."""
-    print(f"Monitoring {', '.join(SOURCE_CELLS)} — poll interval {POLL_INTERVAL}s", flush=True)
+def run_wait(ws: gspread.Worksheet) -> None:
+    """Keep checking until source cells are empty, then fill and exit."""
+    source = ', '.join(SOURCE_CELLS)
+    print(f"Waiting for {source} to be emptied — poll interval {POLL_INTERVAL}s", flush=True)
     print(f"Target cells: {', '.join(TARGET_CELLS)}", flush=True)
     print("Press Ctrl+C to stop.\n", flush=True)
 
@@ -124,11 +126,32 @@ def run_loop(ws: gspread.Worksheet) -> None:
         now = datetime.now().strftime("%H:%M:%S")
 
         if check_source_empty(ws):
-            print(f"[{now}] Source cells empty — populating target cells...", flush=True)
+            print(f"[{now}] {source} is empty — filling target cells...", flush=True)
+            populate_target(ws)
+            print(f"[{now}] Done. Filled: {', '.join(TARGET_CELLS)}", flush=True)
+            break
+        else:
+            print(f"[{now}] {source} has data — waiting...", flush=True)
+
+        time.sleep(POLL_INTERVAL)
+
+
+def run_loop(ws: gspread.Worksheet) -> None:
+    """Continuous monitoring loop (for local testing). Runs forever."""
+    source = ', '.join(SOURCE_CELLS)
+    print(f"Monitoring {source} — poll interval {POLL_INTERVAL}s", flush=True)
+    print(f"Target cells: {', '.join(TARGET_CELLS)}", flush=True)
+    print("Press Ctrl+C to stop.\n", flush=True)
+
+    while True:
+        now = datetime.now().strftime("%H:%M:%S")
+
+        if check_source_empty(ws):
+            print(f"[{now}] {source} is empty — populating target cells...", flush=True)
             populate_target(ws)
             print(f"[{now}] Done.", flush=True)
         else:
-            print(f"[{now}] Source cells have data — waiting...", flush=True)
+            print(f"[{now}] {source} has data — waiting...", flush=True)
 
         time.sleep(POLL_INTERVAL)
 
@@ -137,6 +160,7 @@ def run_loop(ws: gspread.Worksheet) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Google Sheets weekly check")
     parser.add_argument("--loop", action="store_true", help="Run continuously (for testing)")
+    parser.add_argument("--wait", action="store_true", help="Wait for source to empty, then fill and exit")
     args = parser.parse_args()
 
     try:
@@ -144,7 +168,9 @@ def main() -> None:
         ws = get_sheet(creds)
         print(f"Connected to sheet: {ws.title}\n", flush=True)
 
-        if args.loop:
+        if args.wait:
+            run_wait(ws)
+        elif args.loop:
             run_loop(ws)
         else:
             run_once(ws)

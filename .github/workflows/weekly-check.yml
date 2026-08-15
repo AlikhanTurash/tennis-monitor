@@ -26,4 +26,4 @@ jobs:
       - name: Run monitor
         env:
           GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
-        run: python3 monitor.py
+        run: python3 monitor.py --wait
