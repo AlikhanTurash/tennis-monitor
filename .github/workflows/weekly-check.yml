@@ -2,8 +2,8 @@ name: Weekly Sheet Check
 
 on:
   schedule:
-    # TEST: Saturday at 18:55 GMT+5 (13:55 UTC)
-    - cron: '55 13 * * 6'
+    # Every Sunday at 22:00 GMT+5 (17:00 UTC) — backup, primary trigger via cron-job.org
+    - cron: '0 17 * * 0'
   workflow_dispatch:  # Allow manual trigger
 
 jobs:
