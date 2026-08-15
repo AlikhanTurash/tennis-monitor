@@ -34,7 +34,7 @@ TARGET_CELLS = ["B8"]
 # TARGET_CELLS = ["B41","B42","D41","D42","F41","F42"]
 
 FILL_VALUE = "Zhansaya Z."
-POLL_INTERVAL = 30  # seconds (only used in --loop mode)
+POLL_INTERVAL = 5  # seconds (only used in --loop mode)
 
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 CREDENTIALS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "credentials.json")
