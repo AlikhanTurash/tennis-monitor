@@ -105,12 +105,13 @@ def run_once(ws: gspread.Worksheet) -> None:
     """Single check: if source empty, fill targets. Then exit."""
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+    source = ', '.join(SOURCE_CELLS)
     if check_source_empty(ws):
-        print(f"[{now}] H6:H21 is empty — filling target cells...", flush=True)
+        print(f"[{now}] {source} is empty — filling target cells...", flush=True)
         populate_target(ws)
         print(f"[{now}] Done. Filled: {', '.join(TARGET_CELLS)}", flush=True)
     else:
-        print(f"[{now}] H6:H21 has data — no action needed.", flush=True)
+        print(f"[{now}] {source} has data — no action needed.", flush=True)
 
 
 def run_loop(ws: gspread.Worksheet) -> None:
