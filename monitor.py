@@ -27,7 +27,7 @@ SPREADSHEET_ID = "1WXNZsK5Atb-VSjfahnCeay388ZOCmb02HrA0pP0zf3A"
 SHEET_NAME = "TENNIS"
 
 # PROD MODE
-SOURCE_CELLS = ["H6","H7","H8","H9","H10","H11","H12","H13","H14","H15","H16","H17","H18","H19","H20","H21"]
+SOURCE_CELLS = ["F21"]
 TARGET_CELLS = ["B41","B42","D41","D42","F41","F42"]
 
 # TEST MODE (uncomment to test with single cells):
