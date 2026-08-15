@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Google Sheets Weekly Check.
 
-Checks if H6:H21 are all empty.
-If empty, fills B41:B42, D41:D42, F41:F42 with "Zhansaya Z."
+TEST MODE: When B6 is empty → populate B8 with "Zhansaya Z."
+PROD MODE: When H6:H21 are empty → populate B41:B42, D41:D42, F41:F42.
 
 Usage:
   python3 monitor.py          # run once and exit (for scheduled execution)
@@ -25,8 +25,13 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 SPREADSHEET_ID = "1WXNZsK5Atb-VSjfahnCeay388ZOCmb02HrA0pP0zf3A"
 SHEET_NAME = "TENNIS"
 
-SOURCE_CELLS = ["H6","H7","H8","H9","H10","H11","H12","H13","H14","H15","H16","H17","H18","H19","H20","H21"]
-TARGET_CELLS = ["B41","B42","D41","D42","F41","F42"]
+# TEST MODE — change to production values when ready
+SOURCE_CELLS = ["B6"]
+TARGET_CELLS = ["B8"]
+
+# PROD MODE (uncomment when ready):
+# SOURCE_CELLS = ["H6","H7","H8","H9","H10","H11","H12","H13","H14","H15","H16","H17","H18","H19","H20","H21"]
+# TARGET_CELLS = ["B41","B42","D41","D42","F41","F42"]
 
 FILL_VALUE = "Zhansaya Z."
 POLL_INTERVAL = 30  # seconds (only used in --loop mode)
